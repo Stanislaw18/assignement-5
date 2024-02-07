@@ -1,0 +1,78 @@
+using System;
+using System.IO;
+using System.Collections.Generic;
+
+class Journal
+{
+    private List<string> entries;
+    public bool IsWriting { get; private set; }
+
+    public Journal()
+    {
+        entries = new List<string>();
+        IsWriting = false;
+    }
+
+    public void StartWriting()
+    {
+        IsWriting = true;
+        Console.WriteLine("You may now start writing. Enter your journal entries:");
+    }
+
+    public void StopWriting()
+    {
+        IsWriting = false;
+    }
+
+    public void AddEntry(string entry)
+    {
+        if (IsWriting)
+        {
+            entries.Add(entry);
+        }
+    }
+
+    public void SaveToFile()
+    {
+        string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+        string fileName = $"{currentDate}.txt";
+        File.WriteAllLines(fileName, entries);
+        Console.WriteLine($"Your journal has been saved to {fileName}");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Journal captainJournal = new Journal();
+
+        Console.WriteLine("Welcome to the Captain's Journal!");
+        Console.WriteLine("Enter 'start' to begin writing into the journal.");
+        Console.WriteLine("Enter 'stop' to end writing into the journal.");
+
+        string userInput;
+        do
+        {
+            userInput = Console.ReadLine().ToLower();
+
+            switch (userInput)
+            {
+                case "start":
+                    captainJournal.StartWriting();
+                    break;
+                case "stop":
+                    captainJournal.StopWriting();
+                    break;
+                default:
+                    if (captainJournal.IsWriting)
+                    {
+                        captainJournal.AddEntry(userInput);
+                    }
+                    break;
+            }
+        } while (userInput != "stop");
+
+        captainJournal.SaveToFile();
+    }
+}
